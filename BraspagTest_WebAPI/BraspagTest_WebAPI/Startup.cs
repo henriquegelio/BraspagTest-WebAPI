@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using BraspagTest_WebAPI.Models;
 
 namespace BraspagTest_WebAPI
 {
@@ -24,13 +26,8 @@ namespace BraspagTest_WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
+            services.AddDbContext<MdrContext>(opt =>
+                opt.UseInMemoryDatabase("MdrList"));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -49,9 +46,10 @@ namespace BraspagTest_WebAPI
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+            app.UseHttpsRedirection();
+            app.UseMvc();
 
             app.UseMvc(routes =>
             {
